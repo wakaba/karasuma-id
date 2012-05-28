@@ -9,13 +9,14 @@ PERL_PATH = $(abspath local/perlbrew/perls/perl-$(PERL_VERSION)/bin)
 
 Makefile-setupenv: Makefile.setupenv
 	$(MAKE) --makefile Makefile.setupenv setupenv-update \
-	    SETUPENV_MIN_REVISION=20120330
+	    SETUPENV_MIN_REVISION=20120335
 
 Makefile.setupenv:
 	$(WGET) -O $@ https://raw.github.com/wakaba/perl-setupenv/master/Makefile.setupenv
 
 local-perl perl-version perl-exec \
 pmb-install pmb-update \
+remotedev-test \
 : %: Makefile-setupenv
 	$(MAKE) --makefile Makefile.setupenv $@
 
