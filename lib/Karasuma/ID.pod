@@ -1,0 +1,79 @@
+=head1 NAME
+
+Karasuma::ID - A 128-bit ID class
+
+=head1 SYNOPSIS
+
+  my $id = Karasuma::ID->new_from_text('12455...00');
+  my $id = Karasuma::ID->new_from_bytes("\x12\x45\x21..\x00");
+  print $id->as_bytes;
+  print $id->as_text;
+
+=head1 DESCRIPTION
+
+The C<Karasuma::ID> module is an implementation of 128-bit object ID
+for Perl.
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $id = $class->new_from_bytes($bytes)
+
+Create an instance of the ID object from the byte representation of
+the ID (i.e. a sequence of bytes whose length is 16).
+
+=item $id = $class->new_from_text($bytes)
+
+Create an instance of the ID object from the textual representation of
+the ID (i.e. a sequence of lowercase hexadecimal numbers whose length
+is 32).
+
+=item $id = $class->new_void_id
+
+Create an instance of the ID object representing the "void" value
+(i.e. the zero value).
+
+=item $bool = $id->is_valid_id
+
+Return whether the ID is valid or not.  If the ID object is created
+with invalid input, the method returns false.
+
+=item $bool = $id->is_equal_id($id2)
+
+Return whether two ID objects represents the same value or not.  Two
+ID objects are equal if and only if their byte representations are
+equivalent.
+
+=item $bytes = $id->as_bytes
+
+Return the byte representation of the ID.
+
+=item $text = $id->as_text
+
+Return the textual representation of the ID.
+
+=item $text = $id->dump_long
+
+Return a long dump text for debugging purposes.
+
+=back
+
+The ID object implements the C<TO_JSON> method returning the byte
+representation of the object.  That is, the object would be serialized
+by the C<JSON> or C<JSON::XS> module as its byte representation.
+
+=head1 AUTHOR
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
+
+=head1 LICENSE
+
+Copyright 2012 Hatena <http://www.hatena.ne.jp/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

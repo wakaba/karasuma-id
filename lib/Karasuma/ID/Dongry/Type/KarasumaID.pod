@@ -1,0 +1,57 @@
+=head1 NAME
+
+Karasuma::ID::Dongry::Type::KarasumaID - Karasuma ID data type for Dongry
+
+=head1 SYNOPSIS
+
+  use Karasuma::ID::Dongry::Type::KarasumaID;
+  Class::Registry->set(karasuma_id => 'Karasuma::ID');
+  
+  $db->schema({
+    table1 => {
+      type => {
+        id => 'karasuma_id',
+      },
+    },
+  });
+
+=head1 DESCRIPTION
+
+The C<Karasuma::ID::Dongry::Type::KarasumaID> module define
+C<karasuma_id> data type for the Dongry database handler module.
+
+Perl -> SQL: The input must be a L<Karasuma::ID> object or the
+C<undef> value.  If the input is an object, its byte representation is
+returned.  Otherwise, the byte representation of the void ID (i.e. the
+zero value) is returned.
+
+SQL -> Perl: The input must be a byte representation of Karasuma ID,
+i.e. a 128-bit byte sequence, or the C<NULL> value.  If the input is a
+Karasuma ID, corresponding L<Karasuma::ID> object is returned.
+Otherwise the C<undef> value is returned.
+
+Please note that the C<undef> value does not roundtrip.
+
+The module selects the class for the Karasuma ID object by
+L<Class::Registry> with key C<karasuma_id>.  You have to register the
+class name (L<Karasuma::ID> or its subclass) before the type is
+actually used.
+
+=head1 SEE ALSO
+
+L<Class::Registry>.
+
+L<Dongry::Type>.
+
+=head1 AUTHOR
+
+Wakaba (id:wakabatan) <wakabatan@hatena.ne.jp>.
+
+=head1 LICENSE
+
+Copyright 2012 Hatena <http://www.hatena.ne.jp/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
