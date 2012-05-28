@@ -16,7 +16,7 @@ Makefile.setupenv:
 
 local-perl perl-version perl-exec \
 pmb-install pmb-update \
-remotedev-test \
+remotedev-test remotedev-reset \
 : %: Makefile-setupenv
 	$(MAKE) --makefile Makefile.setupenv $@
 

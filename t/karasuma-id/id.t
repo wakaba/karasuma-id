@@ -3,9 +3,8 @@ use strict;
 use warnings;
 use Path::Class;
 use lib file(__FILE__)->dir->parent->parent->subdir('lib')->stringify;
-use lib file(__FILE__)->dir->parent->parent->subdir('modules', 'perl-test-moremore', 'lib')->stringify;
 use base qw(Test::Class);
-use Test::MoreMore;
+use Test::More;
 use Karasuma::ID;
 
 sub _length : Test(2) {
@@ -24,7 +23,7 @@ sub _new_from_bytes : Test(21) {
         ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
     ) {
         my $id = Karasuma::ID->new_from_bytes($_->[0]);
-        is_bool $id->is_valid_id, $_->[1];
+        is !!$id->is_valid_id, !!$_->[1];
         is $id->as_bytes, defined $_->[0] ? $_->[0] : '';
         is $id->as_text, $_->[2];
     }
@@ -41,7 +40,7 @@ sub _new_from_text : Test(21) {
         ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
     ) {
         my $id = Karasuma::ID->new_from_text($_->[2]);
-        is_bool $id->is_valid_id, $_->[1];
+        is !!$id->is_valid_id, !!$_->[1];
         is $id->as_bytes, $_->[0];
         is $id->as_text, $_->[3] || $_->[2] || '';
     }
@@ -57,10 +56,10 @@ sub _is_equal_id : Test(4) {
     my $id2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
     my $id2_2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
     
-    ng $id1->is_equal_id($id2);
+    ok !$id1->is_equal_id($id2);
     ok $id2->is_equal_id($id2);
     ok $id2->is_equal_id($id2_2);
-    ng $id2->is_equal_id($id1);
+    ok !$id2->is_equal_id($id1);
 }
 
 sub _components : Test(20) {

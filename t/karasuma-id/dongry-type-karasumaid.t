@@ -5,7 +5,7 @@ use Path::Class;
 use lib file(__FILE__)->dir->parent->parent->subdir('lib')->stringify;
 use lib glob file(__FILE__)->dir->parent->parent->subdir('modules', '*', 'lib')->stringify;
 use base qw(Test::Class);
-use Test::MoreMore;
+use Test::More;
 use Class::Registry;
 BEGIN { $INC{'Dongry/Type.pm'} = 1; sub Dongry::Type::import { } }
 use Karasuma::ID::Dongry::Type::KarasumaID;
@@ -23,7 +23,7 @@ sub _serialize_id_invalid : Test(1) {
 }
 
 sub _serialize_id_undef : Test(1) {
-    eq_or_diff $Dongry::Types->{karasuma_id}->{serialize}->(undef), "\x00" x 16;
+    is $Dongry::Types->{karasuma_id}->{serialize}->(undef), "\x00" x 16;
 }
 
 sub _parse_id : Test(2) {
@@ -46,7 +46,7 @@ sub _parse_id_undef : Test(1) {
 sub _parse_id_broken : Test(2) {
     my $id1 = $Dongry::Types->{karasuma_id}->{parse}->("abc def");
     isa_ok $id1, 'Karasuma::ID';
-    ng $id1->is_valid_id;
+    ok !$id1->is_valid_id;
 }
 
 __PACKAGE__->runtests;
