@@ -35,7 +35,7 @@ test-deps: submodule-update pmb-install
 test-deps-travis: test-deps-debian
 
 test-deps-debian:
-	sudo apt-get install gmp-devel
+	sudo apt-get install libgmp3-dev
 
 test-main:
 	PATH=$(PERL_PATH):$(PATH) PERL5LIB=$(shell cat config/perl/libs.txt) \
