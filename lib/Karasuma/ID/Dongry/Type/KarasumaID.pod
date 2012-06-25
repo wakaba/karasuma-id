@@ -18,19 +18,25 @@ Karasuma::ID::Dongry::Type::KarasumaID - Karasuma ID data type for Dongry
 =head1 DESCRIPTION
 
 The C<Karasuma::ID::Dongry::Type::KarasumaID> module define
-C<karasuma_id> data type for the Dongry database handler module.
+C<karasuma_id> and C<karasuma_id_optional> data types for the Dongry
+database handler module.
 
 Perl -> SQL: The input must be a L<Karasuma::ID> object or the
 C<undef> value.  If the input is an object, its byte representation is
 returned.  Otherwise, the byte representation of the void ID (i.e. the
-zero value) is returned.
+zero value) is returned.  Please note that both C<karasuma_id> and
+C<karasuma_id_optional> data types never generate the SQL C<NULL>
+value.
 
 SQL -> Perl: The input must be a byte representation of Karasuma ID,
-i.e. a 128-bit byte sequence, or the C<NULL> value.  If the input is a
-Karasuma ID, corresponding L<Karasuma::ID> object is returned.
-Otherwise the C<undef> value is returned.
+i.e. a 128-bit byte sequence, or the C<NULL> value.  If the data type
+is C<karasuma_id_optional> and the input is the void ID, the C<undef>
+value is returned.  Otherwise, if the input is a Karasuma ID,
+corresponding L<Karasuma::ID> object is returned.  Otherwise the
+C<undef> value is returned.
 
-Please note that the C<undef> value does not roundtrip.
+Please note that the C<undef> value does not roundtrip, even for the
+C<karasuma_id_optional> data type.
 
 The module selects the class for the Karasuma ID object by
 L<Class::Registry> with key C<karasuma_id>.  You have to register the

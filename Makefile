@@ -14,7 +14,7 @@ Makefile-setupenv: Makefile.setupenv
 Makefile.setupenv:
 	$(WGET) -O $@ https://raw.github.com/wakaba/perl-setupenv/master/Makefile.setupenv
 
-local-perl perl-version perl-exec \
+lperl local-perl perl-version perl-exec \
 pmb-install pmb-update \
 remotedev-test remotedev-reset \
 : %: Makefile-setupenv
