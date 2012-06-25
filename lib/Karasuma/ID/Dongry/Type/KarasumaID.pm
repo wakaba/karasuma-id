@@ -30,7 +30,7 @@ $Dongry::Types->{karasuma_id} = {
     },
 };
 
-$Dongry::Types->{karasuma_id_nullable} = {
+$Dongry::Types->{karasuma_id_optional} = {
     parse => sub {
         if (not defined $_[0]) {
             return undef;
