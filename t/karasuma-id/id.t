@@ -29,7 +29,7 @@ sub _new_from_bytes : Test(21) {
     }
 }
 
-sub _new_from_text : Test(21) {
+sub _new_from_text : Test(28) {
     for (
         ['', 0, undef],
         ['', 0, ''],
@@ -43,15 +43,17 @@ sub _new_from_text : Test(21) {
         is !!$id->is_valid_id, !!$_->[1];
         is $id->as_bytes, $_->[0];
         is $id->as_text, $_->[3] || $_->[2] || '';
+        ok !$id->is_void_id;
     }
 }
 
-sub _new_void_id : Test(1) {
+sub _new_void_id : Test(2) {
     my $id = Karasuma::ID->new_void_id;
     is $id->as_text, '00000000000000000000000000000000';
+    ok $id->is_void_id;
 }
 
-sub _is_equal_id : Test(4) {
+sub _is_equal_id : Test(5) {
     my $id1 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c730d');
     my $id2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
     my $id2_2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
@@ -60,6 +62,7 @@ sub _is_equal_id : Test(4) {
     ok $id2->is_equal_id($id2);
     ok $id2->is_equal_id($id2_2);
     ok !$id2->is_equal_id($id1);
+    ok !$id1->is_void_id;
 }
 
 sub _components : Test(20) {

@@ -41,6 +41,11 @@ Create an instance of the ID object representing the "void" value
 Return whether the ID is valid or not.  If the ID object is created
 with invalid input, the method returns false.
 
+=item $bool = $id->is_void_id
+
+Return whether the ID is the void ID or not.  Please note that the
+void ID is still a valid ID.
+
 =item $bool = $id->is_equal_id($id2)
 
 Return whether two ID objects represents the same value or not.  Two

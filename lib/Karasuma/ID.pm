@@ -58,6 +58,10 @@ sub is_equal_id {
     return $_[0]->as_bytes eq $_[1]->as_bytes;
 }
 
+sub is_void_id {
+    return $_[0]->as_text eq $VoidID;
+}
+
 # ------ Serialization ------
 
 sub as_bytes {
