@@ -1,59 +1,63 @@
-package test::Karasuma::ID;
 use strict;
 use warnings;
 use Path::Class;
 use lib file(__FILE__)->dir->parent->parent->subdir('lib')->stringify;
-use base qw(Test::Class);
+use lib glob file(__FILE__)->dir->parent->parent->subdir('modules', '*', 'lib')->stringify;
 use Test::More;
+use Test::X1;
 use Karasuma::ID;
 
-sub _length : Test(2) {
+test {
     ok +KARASUMA_ID_BIT_LENGTH;
     is +KARASUMA_ID_BYTE_LENGTH * 8, KARASUMA_ID_BIT_LENGTH;
+    shift->done;
+} n => 2;
+
+for my $test (
+    [undef, 0, ''],
+    ['', 0, ''],
+    ['0', 0, '30'],
+    ["abcdefghijklmno", 0, "6162636465666768696a6b6c6d6e6f"],
+    ["abcdefghijklmnop", 1, "6162636465666768696a6b6c6d6e6f70"],
+    ["ABCDEFGHIJKLMNOP", 1, "4142434445464748494a4b4c4d4e4f50"],
+    ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
+) {
+    test {
+        my $id = Karasuma::ID->new_from_bytes($test->[0]);
+        is !!$id->is_valid_id, !!$test->[1];
+        is $id->as_bytes, defined $test->[0] ? $test->[0] : '';
+        is $id->as_text, $test->[2];
+        shift->done;
+    } n => 3, name => ['new_from_bytes', $test->[0]];
 }
 
-sub _new_from_bytes : Test(21) {
-    for (
-        [undef, 0, ''],
-        ['', 0, ''],
-        ['0', 0, '30'],
-        ["abcdefghijklmno", 0, "6162636465666768696a6b6c6d6e6f"],
-        ["abcdefghijklmnop", 1, "6162636465666768696a6b6c6d6e6f70"],
-        ["ABCDEFGHIJKLMNOP", 1, "4142434445464748494a4b4c4d4e4f50"],
-        ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
-    ) {
-        my $id = Karasuma::ID->new_from_bytes($_->[0]);
-        is !!$id->is_valid_id, !!$_->[1];
-        is $id->as_bytes, defined $_->[0] ? $_->[0] : '';
-        is $id->as_text, $_->[2];
-    }
-}
-
-sub _new_from_text : Test(28) {
-    for (
-        ['', 0, undef],
-        ['', 0, ''],
-        ["\x{00}", 0, '0', "00"],
-        ["abcdefghijklmno", 0, "6162636465666768696a6b6c6d6e6f"],
-        ["abcdefghijklmnop", 1, "6162636465666768696a6b6c6d6e6f70"],
-        ["ABCDEFGHIJKLMNOP", 1, "4142434445464748494a4b4c4d4e4f50"],
-        ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
-    ) {
-        my $id = Karasuma::ID->new_from_text($_->[2]);
-        is !!$id->is_valid_id, !!$_->[1];
-        is $id->as_bytes, $_->[0];
-        is $id->as_text, $_->[3] || $_->[2] || '';
+for my $test (
+    ['', 0, undef],
+    ['', 0, ''],
+    ["\x{00}", 0, '0', "00"],
+    ["abcdefghijklmno", 0, "6162636465666768696a6b6c6d6e6f"],
+    ["abcdefghijklmnop", 1, "6162636465666768696a6b6c6d6e6f70"],
+    ["ABCDEFGHIJKLMNOP", 1, "4142434445464748494a4b4c4d4e4f50"],
+    ["\x{FE}\x{EE}\x{CE}\x{aB}31\x{FA}ab\x{21}a\x{09}\x{0A}\x{0C}s\x{0D}", 1, "feeeceab3331fa61622161090a0c730d"],
+) {
+    test {
+        my $id = Karasuma::ID->new_from_text($test->[2]);
+        is !!$id->is_valid_id, !!$test->[1];
+        is $id->as_bytes, $test->[0];
+        is $id->as_text, $test->[3] || $test->[2] || '';
         ok !$id->is_void_id;
-    }
+        shift->done;
+    } n => 4, name => ['new_from_text', $test->[2]];
 }
 
-sub _new_void_id : Test(2) {
+test {
     my $id = Karasuma::ID->new_void_id;
     is $id->as_text, '00000000000000000000000000000000';
     ok $id->is_void_id;
-}
+    shift->done;
+} n => 2, name => 'void_id';
 
-sub _is_equal_id : Test(5) {
+test {
     my $id1 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c730d');
     my $id2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
     my $id2_2 = Karasuma::ID->new_from_text('feeeceab3331fa61622161090a0c731d');
@@ -63,18 +67,20 @@ sub _is_equal_id : Test(5) {
     ok $id2->is_equal_id($id2_2);
     ok !$id2->is_equal_id($id1);
     ok !$id1->is_void_id;
-}
+    shift->done;
+} n => 5, name => 'equal_id';
 
-sub _components : Test(20) {
-    Karasuma::ID->define_id_structure;
+Karasuma::ID->define_id_structure;
+test {
     for (values %$Karasuma::ID::Defs) {
         ok defined $_->{start};
         ok $_->{length};
         ok $_->{start} + $_->{length} - 1 < KARASUMA_ID_BIT_LENGTH;
         ok $_->{number_format};
     }
-}
+    shift->done;
+} n => 4 * (keys %$Karasuma::ID::Defs), name => 'components';
 
-__PACKAGE__->runtests;
+run_tests;
 
 1;

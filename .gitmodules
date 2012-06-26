@@ -1,3 +1,6 @@
 [submodule "modules/perl-ooutils"]
 	path = modules/perl-ooutils
 	url = git://github.com/wakaba/perl-ooutils.git
+[submodule "modules/perl-test-x1"]
+	path = modules/perl-test-x1
+	url = git://github.com/wakaba/perl-test-x1.git
